@@ -2,9 +2,6 @@ import Foundation
 import MongoKitten
 import Darwin
 
-
-
-
 let file: String! = CommandLine.arguments[1]
 
 if file != nil { // Verify if file is valid
@@ -30,37 +27,23 @@ if file != nil { // Verify if file is valid
         let url = URL(string: sUrl)!
         
             let op = WSRequest(url: url, session: session){ (data,response,error) in
-  
-               let stringValue =  String(data: data!, encoding: String.Encoding.utf8)!
-              
+                let stringValue =  String(data: data!, encoding: String.Encoding.utf8)!
                 let title =  stringValue.getStringBetweenStrings(beginString: "<title>",endString:"</title>") ?? "Esse foi nulo"
-
                 let body  =  stringValue.getStringBetweenStrings(beginString: "<p>",endString:"</p>") ?? "Esse foi nulo"
-                
                 mongo.save(collection: "Article",title: title,body: body)
-            
-                
-                
             }
-            
             oQueue.addOperation(op)
-            
-            
     }
-                oQueue.waitUntilAllOperationsAreFinished()
+   
+        oQueue.waitUntilAllOperationsAreFinished()
         
     }catch{
-
         debugPrint("Read/Write error")
-
-        }
-
     }
+  }
 
-}else{
-
+} else {
     debugPrint("Wrong arguments")
     exit(0)
-
 }
 
